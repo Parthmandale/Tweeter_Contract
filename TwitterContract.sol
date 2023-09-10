@@ -2,7 +2,8 @@
 
 pragma solidity >=0.7.0 <0.9.0;
 
-contract Tweeter {
+contract Twitter{
+
     struct Tweet {
         uint256 id;
         address author;
@@ -13,7 +14,7 @@ contract Tweeter {
     struct Message {
         uint256 id;
         string content;
-        address from;
+        address from;  
         address to;
         uint256 createdAt;
     }
@@ -47,12 +48,7 @@ contract Tweeter {
         nextId = nextId + 1;
     }
 
-    function _sendMessage(
-        address _from,
-        address _to,
-        string memory _content
-    ) internal {
-        //tweet access check - owner,authority
+    function _sendMessage(address _from,address _to,string memory _content) internal { //tweet access check - owner,authority
 
         require(
             _from == msg.sender || operators[_from][msg.sender],
@@ -66,14 +62,13 @@ contract Tweeter {
         nextMessageId++;
     }
 
-    function tweet(string memory _content) public {
+    function tweet(string memory _content) public { //Here because we have called parameter we are ablto put the tweet by our own after deploying
         //owner
 
         _tweet(msg.sender, _content);
     }
 
-    function tweet(address _from, string memory _content) public {
-        //owner->address access
+    function tweet(address _from, string memory _content) public { //owner->address access
 
         _tweet(_from, _content);
     }
@@ -84,11 +79,7 @@ contract Tweeter {
         _sendMessage(msg.sender, _to, _content);
     }
 
-    function sendMessage(
-        address _from,
-        address _to,
-        string memory _content
-    ) public {
+    function sendMessage(address _from, address _to, string memory _content) public {
         //owner - address access
 
         _sendMessage(_from, _to, _content);
@@ -109,14 +100,11 @@ contract Tweeter {
     }
 
     //latest tweet
-    function getLatestTweets(uint256 count)
-        public
-        view
-        returns (Tweet[] memory)
-    {
+    function getLatestTweets(uint256 count) public view returns (Tweet[] memory){
+
         require(count > 0 && count <= nextId, "Count is not proper");
 
-        Tweet[] memory _tweets = new Tweet[](count); //array length - count
+        Tweet[] memory _tweets = new Tweet[](count); // New array created and length - count
 
         uint256 j;
 
@@ -131,24 +119,20 @@ contract Tweeter {
                 _structure.content,
                 _structure.createdAt
             );
-
+        
             j = j + 1;
         }
 
         return _tweets;
     }
 
-    function getLatestofUser(address _user, uint256 count)
-        public
-        view
-        returns (Tweet[] memory)
-    {
-        //7
+    function getLatestofUser(address _user, uint256 count) public view returns (Tweet[] memory){
+      
 
         Tweet[] memory _tweets = new Tweet[](count); //new memory array whoose length is count
-
+          
         //tweetsOf[_user] is having all the id's of the user
-
+         
         uint256[] memory ids = tweetsOf[_user]; ///ids is an array
 
         require(count > 0 && count <= ids.length, "Count is not defined");
@@ -169,7 +153,7 @@ contract Tweeter {
 
             j = j + 1;
         }
-
+        
         return _tweets;
     }
 }
